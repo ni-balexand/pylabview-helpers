@@ -89,5 +89,6 @@ def get_vi(vi_path, parse_diagrams=True):
                     filtered_block_headers.append(header)
             vi.readRSRCBlockData(rsrc_fh, filtered_block_headers)
             vi.checkSanity()
+        return vi
 
 

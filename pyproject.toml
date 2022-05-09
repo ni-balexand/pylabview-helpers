@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pylabview_helpers"
-version = "0.1"
+version = "0.1.1"
 description = "Helper package for working with pylabview"
 authors = ["strainmike",]
 license = "MIT"
