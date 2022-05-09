@@ -1,0 +1,13 @@
+[tool.poetry]
+name = "pylabview_helpers"
+version = "0.1"
+description = "Helper package for working with pylabview"
+authors = ["strainmike",]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.7.0"
+pylabview = "^0.1.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "*"
