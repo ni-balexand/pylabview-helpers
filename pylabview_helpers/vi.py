@@ -1,5 +1,4 @@
 from pylabview.LVrsrcontainer import VI
-from pylabview import LVheap
 
 from contextlib import contextmanager, redirect_stderr
 
@@ -65,7 +64,7 @@ def suppress_stderr():
             yield (err)
 
 
-def get_vi(vi_path, parse_diagrams=True):
+def get_vi(vi_path, parse_diagrams=True, parse_save_record=False):
     with open(vi_path, "rb") as rsrc_fh:
         parse_options = _PyLabVIEWParseOptions(vi_path)
         vi = VI(parse_options)
@@ -79,14 +78,19 @@ def get_vi(vi_path, parse_diagrams=True):
         vi.readRSRCList(rsrc_fh)
         block_headers = vi.readRSRCBlockInfo(rsrc_fh)
 
-        if parse_diagrams:
-            filtered_block_headers = []
-            for header in block_headers:
-                section_name = bytearray(header.ident).decode()
-                if "FPH" in section_name:
+        filtered_block_headers = []
+        for header in block_headers:
+            section_name = bytearray(header.ident).decode("ascii")
+            if section_name == "vers":  # Version
+                filtered_block_headers.append(header)
+            if section_name == "LVSR" and parse_save_record:  # Save Record
+                filtered_block_headers.append(header)
+            if parse_diagrams:
+                if "FPH" in section_name:  # Front panel
                     filtered_block_headers.append(header)
-                elif "BDH" in section_name:
+                elif "BDH" in section_name:  # Block Diagram
                     filtered_block_headers.append(header)
+        if filtered_block_headers:
             vi.readRSRCBlockData(rsrc_fh, filtered_block_headers)
             vi.checkSanity()
         return vi
